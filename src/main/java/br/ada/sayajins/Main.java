@@ -10,9 +10,13 @@ import java.util.List;
 
 import br.ada.sayajins.model.Pagamentos;
 import br.ada.sayajins.model.TipoPagamentoEnum;
+import br.ada.sayajins.utils.MemorySaveUtil;
 
 public class Main {
+
     public static void main(String[] args) {
+        MemorySaveUtil memory = MemorySaveUtil.getInstance();
+
         String file = "src/main/resources/pagamentos.csv";
         List<String> content = new ArrayList<>();
         try(BufferedReader br = new BufferedReader(new FileReader(file))) {
@@ -39,9 +43,11 @@ public class Main {
 
         }
 
-        for(Pagamentos a : listaPagamentos){
-            System.out.println(a);
-        }
+        listaPagamentos.stream()
+            .forEach(p -> memory.save(p));
+
+        memory.getData().stream()
+            .forEach(e -> System.out.println(e.getKey() + ": " + e.getValue()));
     }
 
 }
