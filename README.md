@@ -20,6 +20,6 @@ Por exemplo: `PAGAMENTOS_PIX_2022-12-04.csv`
 
 Façam um fork deste projeto, que deverá ser feito em grupo, com cada integrante realizando seu commit, para que sua avaliação individual seja possível
 
-Com o projeto concluído, enviem o link para o Class até o dia 7/12.
+Com o projeto concluído, enviem o link para o Class até o dia 9/12.
 
 Boa sorte!
