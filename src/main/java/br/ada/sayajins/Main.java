@@ -45,12 +45,14 @@ public class Main {
         }
 
         listaPagamentos.stream()
-                .forEach(p -> memory.save(p));
+            .forEach(p -> memory.save(p));
 
         /*
          * memory.getData().stream()
          * .forEach(e -> System.out.println(e.getKey() + ": " + e.getValue()));
          */
+
+
         Pagamentos pg = new Pagamentos("conta de água", LocalDate.of(2022, 10, 1), 200.0, TipoPagamentoEnum.BOLETO);
 
         System.out.println(VerificaValidadePagamentoUtil.calculoDeMesesDeAtraso(pg));
@@ -58,5 +60,4 @@ public class Main {
         EscritaEmArquivo.EscreverProcessamento(memory);
 
     }
-
 }
