@@ -11,6 +11,7 @@ import java.util.List;
 import br.ada.sayajins.model.Pagamentos;
 import br.ada.sayajins.model.TipoPagamentoEnum;
 import br.ada.sayajins.utils.MemorySaveUtil;
+import br.ada.sayajins.utils.VerificaValidadePagamento;
 
 public class Main {
 
@@ -46,8 +47,11 @@ public class Main {
         listaPagamentos.stream()
             .forEach(p -> memory.save(p));
 
-        memory.getData().stream()
-            .forEach(e -> System.out.println(e.getKey() + ": " + e.getValue()));
+        /* memory.getData().stream()
+            .forEach(e -> System.out.println(e.getKey() + ": " + e.getValue()));*/
+        Pagamentos pg = new Pagamentos("conta de água",LocalDate.of(2022, 10, 1), 200.0,TipoPagamentoEnum.BOLETO);
+
+        System.out.println(VerificaValidadePagamento.calculoDeMesesDeAtraso(pg));
     }
 
 }
