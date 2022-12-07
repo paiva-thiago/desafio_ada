@@ -8,15 +8,19 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.ada.sayajins.enums.TipoPagamento;
 import br.ada.sayajins.model.Pagamentos;
 import br.ada.sayajins.model.TipoPagamentoEnum;
+import br.ada.sayajins.utils.CalcularAcrescimo;
 import br.ada.sayajins.utils.MemorySaveUtil;
-import br.ada.sayajins.utils.VerificaValidadePagamento;
+import br.ada.sayajins.utils.VerificaValidadePagamentoUtil;
 
 public class Main {
 
     public static void main(String[] args) {
         MemorySaveUtil memory = MemorySaveUtil.getInstance();
+
+        CalcularAcrescimo calcularAcrescimo = new CalcularAcrescimo();
 
         String file = "src/main/resources/pagamentos.csv";
         List<String> content = new ArrayList<>();
@@ -45,13 +49,33 @@ public class Main {
         }
 
         listaPagamentos.stream()
-            .forEach(p -> memory.save(p));
-
-        /* memory.getData().stream()
-            .forEach(e -> System.out.println(e.getKey() + ": " + e.getValue()));*/
-        Pagamentos pg = new Pagamentos("conta de água",LocalDate.of(2022, 10, 1), 200.0,TipoPagamentoEnum.BOLETO);
-
-        System.out.println(VerificaValidadePagamento.calculoDeMesesDeAtraso(pg));
+        .forEach(
+            p->
+            {
+                System.out.println(p);
+                p.setValor(p.getValor().add(calcularAcrescimo.acrescimo(p.getValor(), enum2Acr(p.getTipoPagamentoEnum()), VerificaValidadePagamentoUtil.calculoDeMesesDeAtraso(p))));
+                System.out.println(p);
+            }
+        );
+            
     }
+
+    private static TipoPagamento enum2Acr(TipoPagamentoEnum tp)
+    {
+        switch (tp)
+        {
+            case BOLETO:
+                return TipoPagamento.BOLETO;
+            case CREDITO:
+                return TipoPagamento.CREDITO;
+            case DEBITO:
+                return TipoPagamento.DEBITO;
+            case FIDELIDADE:
+                return TipoPagamento.PIX;
+            default:
+                return TipoPagamento.PIX;
+
+        }
+} 
 
 }
