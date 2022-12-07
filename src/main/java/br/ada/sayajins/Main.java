@@ -9,10 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import br.ada.sayajins.enums.TipoPagamento;
 import br.ada.sayajins.model.Pagamentos;
 import br.ada.sayajins.model.TipoPagamentoEnum;
-import br.ada.sayajins.utils.CalcularAcrescimo;
+import br.ada.sayajins.utils.EscritaEmArquivo;
 import br.ada.sayajins.utils.MemorySaveUtil;
 import br.ada.sayajins.utils.VerificaValidadePagamentoUtil;
 
@@ -21,22 +20,19 @@ public class Main {
     public static void main(String[] args) {
         MemorySaveUtil memory = MemorySaveUtil.getInstance();
 
-        CalcularAcrescimo calcularAcrescimo = new CalcularAcrescimo();
-
         String file = "src/main/resources/pagamentos.csv";
         List<String> content = new ArrayList<>();
-        try(BufferedReader br = new BufferedReader(new FileReader(file))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             while ((br.readLine()) != null) {
-                content.add(br.readLine());                
+                content.add(br.readLine());
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        catch(IOException e) {
-          e.printStackTrace();
-        }    
 
         List<Pagamentos> listaPagamentos = new ArrayList<>();
 
-        for(int i = 0; i< content.size(); i++){
+        for (int i = 0; i < content.size(); i++) {
 
             String[] arrOfStr = content.get(i).split(";");
 
@@ -50,26 +46,25 @@ public class Main {
         }
 
         listaPagamentos.stream()
-        .forEach(
-            p->
-            {
-                System.out.println(p);
-                p.setValor(p.getValor().add(calcularAcrescimo.acrescimo(p.getValor(), enum2Acr(p.getTipoPagamentoEnum()), VerificaValidadePagamentoUtil.calculoDeMesesDeAtraso(p))));
-                System.out.println(p);
-            }
-        );
-            
-    }
+            .forEach(p -> memory.save(p));
 
 
         System.out.println(listaPagamentos.stream()
-            .map(p -> VerificaValidadePagamento.calculaDesconto(p)).collect(Collectors.toList()));
+            .map(p -> VerificaValidadePagamentoUtil.calculaDesconto(p)).collect(Collectors.toList()));
             
         /* memory.getData().stream()
             .forEach(e -> System.out.println(e.getKey() + ": " + e.getValue()));*/
-        Pagamentos pg = new Pagamentos("conta de água",LocalDate.of(2022, 10, 1), 200.0,TipoPagamentoEnum.BOLETO);
 
-        }
-} 
+        /*
+         * memory.getData().stream()
+         * .forEach(e -> System.out.println(e.getKey() + ": " + e.getValue()));
+         */
 
+        Pagamentos pg = new Pagamentos("conta de água", LocalDate.of(2022, 10, 1), 200.0, TipoPagamentoEnum.BOLETO);
+
+        System.out.println(VerificaValidadePagamentoUtil.calculoDeMesesDeAtraso(pg));
+
+        EscritaEmArquivo.EscreverProcessamento(memory);
+
+    }
 }

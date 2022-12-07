@@ -6,19 +6,19 @@ import br.ada.sayajins.model.Pagamentos;
 
 public class VerificaValidadePagamentoUtil {
 
-    public static Long calculoDeMesesDeAtraso(Pagamentos pagamento){        
-        if(pagamentoEstaAtrasado(pagamento)){
+    public static Long calculoDeMesesDeAtraso(Pagamentos pagamento) {
+        if (pagamentoEstaAtrasado(pagamento)) {
             LocalDate dataAtual = LocalDate.now();
             LocalDate dataDeVencimento = pagamento.getDtVencto();
-            return ChronoUnit.MONTHS.between(dataDeVencimento,dataAtual);
+            return ChronoUnit.MONTHS.between(dataDeVencimento, dataAtual);
         }
         return 0L;
     }
 
-    public static boolean pagamentoEstaAtrasado(Pagamentos pagamento){
+    public static boolean pagamentoEstaAtrasado(Pagamentos pagamento) {
         LocalDate dataAtual = LocalDate.now();
         LocalDate dataDeVencimento = pagamento.getDtVencto();
         return dataDeVencimento.isBefore(dataAtual);
     }
-    
+
 }
