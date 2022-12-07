@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import br.ada.sayajins.model.Pagamentos;
 import br.ada.sayajins.model.TipoPagamentoEnum;
@@ -47,11 +48,17 @@ public class Main {
         listaPagamentos.stream()
             .forEach(p -> memory.save(p));
 
+
+        System.out.println(listaPagamentos.stream()
+            .map(p -> VerificaValidadePagamentoUtil.calculaDesconto(p)).collect(Collectors.toList()));
+            
+        /* memory.getData().stream()
+            .forEach(e -> System.out.println(e.getKey() + ": " + e.getValue()));*/
+
         /*
          * memory.getData().stream()
          * .forEach(e -> System.out.println(e.getKey() + ": " + e.getValue()));
          */
-
 
         Pagamentos pg = new Pagamentos("conta de água", LocalDate.of(2022, 10, 1), 200.0, TipoPagamentoEnum.BOLETO);
 
