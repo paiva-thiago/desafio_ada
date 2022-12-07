@@ -9,15 +9,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import br.ada.sayajins.enums.TipoPagamento;
 import br.ada.sayajins.model.Pagamentos;
 import br.ada.sayajins.model.TipoPagamentoEnum;
+import br.ada.sayajins.utils.CalcularAcrescimo;
 import br.ada.sayajins.utils.MemorySaveUtil;
-import br.ada.sayajins.utils.VerificaValidadePagamento;
+import br.ada.sayajins.utils.VerificaValidadePagamentoUtil;
 
 public class Main {
 
     public static void main(String[] args) {
         MemorySaveUtil memory = MemorySaveUtil.getInstance();
+
+        CalcularAcrescimo calcularAcrescimo = new CalcularAcrescimo();
 
         String file = "src/main/resources/pagamentos.csv";
         List<String> content = new ArrayList<>();
@@ -46,7 +50,16 @@ public class Main {
         }
 
         listaPagamentos.stream()
-            .forEach(p -> memory.save(p));
+        .forEach(
+            p->
+            {
+                System.out.println(p);
+                p.setValor(p.getValor().add(calcularAcrescimo.acrescimo(p.getValor(), enum2Acr(p.getTipoPagamentoEnum()), VerificaValidadePagamentoUtil.calculoDeMesesDeAtraso(p))));
+                System.out.println(p);
+            }
+        );
+            
+    }
 
 
         System.out.println(listaPagamentos.stream()
@@ -56,7 +69,7 @@ public class Main {
             .forEach(e -> System.out.println(e.getKey() + ": " + e.getValue()));*/
         Pagamentos pg = new Pagamentos("conta de água",LocalDate.of(2022, 10, 1), 200.0,TipoPagamentoEnum.BOLETO);
 
-        System.out.println(VerificaValidadePagamento.calculoDeMesesDeAtraso(pg));
-    }
+        }
+} 
 
 }

@@ -56,18 +56,21 @@ public class MemorySaveUtil {
         this.memory.get(paymentMethod).add(pagamento);
     }
 
+    
+    /** 
+     * @return Set<Entry<String, List<Pagamentos>>>
+     * This entry set contains both
+     * the name of the payment method
+     * and the Pagamentos objects 
+     * related to this payment method
+     * 
+     * Each entry.getKey() will return the payment method
+     * whilst each entry.getValue() will return a List
+     * containing all Pagamentos referring to the payment method. 
+    */
     public Set<Entry<String, List<Pagamentos>>> getData()
     {
-        /**
-         * This entry set contains both
-         * the name of the payment method
-         * and the Pagamentos objects 
-         * related to this payment method
-         * 
-         * Each entry.getKey() will return the payment method
-         * whilst each entry.getValue() will return a List
-         * containing all Pagamentos referring to the payment method. 
-         */
+
         return this.memory.entrySet();
 
     }

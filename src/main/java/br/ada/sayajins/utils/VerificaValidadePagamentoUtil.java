@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import br.ada.sayajins.model.Pagamentos;
 
-public class VerificaValidadePagamento {
+public class VerificaValidadePagamentoUtil {
 
     public static Long calculoDeMesesDeAtraso(Pagamentos pagamento){        
         if(pagamentoEstaAtrasado(pagamento)){
