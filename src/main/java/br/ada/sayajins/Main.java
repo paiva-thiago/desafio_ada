@@ -18,6 +18,13 @@ public class Main {
     public static void main(String[] args) {
         MemorySaveUtil memory = MemorySaveUtil.getInstance();
 
+
+        /**
+
+        @author Isaac Gomes Medeiros
+            Mapeamento das tuplas do CSV para uma lista de pagamentos
+
+        */
         String file = "src/main/resources/pagamentos.csv";
         List<String> content = new ArrayList<>();
         try(BufferedReader br = new BufferedReader(new FileReader(file))) {
