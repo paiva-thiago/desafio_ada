@@ -4,7 +4,14 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 import br.ada.sayajins.model.Pagamentos;
 
@@ -18,15 +25,37 @@ public class EscritaEmArquivo {
      * pagamento
      * 
      * @param dadosProcessados : Lista em memória com os dados processados
+     * @throws ExecutionException
+     * @throws InterruptedException
      */
-    public static void EscreverProcessamento(MemorySaveUtil dadosProcessados) {
-
+    public static void EscreverProcessamento(MemorySaveUtil dadosProcessados) throws InterruptedException {
+        List<CompletableFuture<Void>> futures = new ArrayList<>(); 
         dadosProcessados.getData()
                 .stream()
-                .forEach(tipoPagamento -> escreverProcessamentoPorTipo(
-                        tipoPagamento.getKey(),
-                        tipoPagamento.getValue()));
-
+                .forEach(tipoPagamento -> futures.add(
+                    CompletableFuture.supplyAsync(
+                            (Supplier<Void>) () -> 
+                            {
+                                escreverProcessamentoPorTipo(
+                                tipoPagamento.getKey(),
+                                tipoPagamento.getValue());
+                                return null;
+                            }  
+                        )
+                    ));
+        
+        try
+        {
+            CompletableFuture.allOf
+            (
+            futures.toArray(new CompletableFuture[futures.size()])
+            ).get();
+        }
+        catch (ExecutionException e)
+        {
+            
+        }
+                
     }
 
     private static void escreverProcessamentoPorTipo(String tipoPagamento, List<Pagamentos> pagamentos) {
@@ -61,6 +90,8 @@ public class EscritaEmArquivo {
                 }
 
             });
+            TimeUnit.SECONDS.sleep(ThreadLocalRandom.current().nextInt(1,10));
+            System.out.println(nomeArquivo + "finalizado");
 
         } catch (Exception e) {
             System.out.printf("\nErro ao acessar arquivo \"%s\": \"%s\"\n", nomeArquivo, e.getMessage());

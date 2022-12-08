@@ -16,8 +16,10 @@ import br.ada.sayajins.utils.MemorySaveUtil;
 import br.ada.sayajins.utils.VerificaValidadePagamentoUtil;
 
 public class Main {
-
+    
     public static void main(String[] args) {
+        System.out.println("Begining main");
+
         MemorySaveUtil memory = MemorySaveUtil.getInstance();
 
         String file = "src/main/resources/pagamentos.csv";
@@ -64,7 +66,13 @@ public class Main {
 
         System.out.println(VerificaValidadePagamentoUtil.calculoDeMesesDeAtraso(pg));
 
-        EscritaEmArquivo.EscreverProcessamento(memory);
+        try {
+            EscritaEmArquivo.EscreverProcessamento(memory);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Finished main");
 
     }
 }
