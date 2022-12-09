@@ -3,10 +3,14 @@ package br.ada.sayajins;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import br.ada.sayajins.model.Pagamentos;
@@ -16,6 +20,9 @@ import br.ada.sayajins.utils.MemorySaveUtil;
 import br.ada.sayajins.utils.VerificaValidadePagamentoUtil;
 
 public class Main {
+
+    private static BigDecimal operationCosts = new BigDecimal("10");   
+    
     
     public static void main(String[] args) {
         System.out.println("Begining main");
@@ -47,33 +54,52 @@ public class Main {
 
         }
 
+
+
+        Consumer<Pagamentos> addOperationCosts = (p) -> 
+        {
+            //Checks if still late, by a couple days, if so add operation costs
+            if (VerificaValidadePagamentoUtil.pagamentoEstaAtrasado(p))
+            {
+                p.setValor(p.getValor().add(operationCosts));
+                //Sets payment day to today
+                p.setDtVencto(LocalDate.now());
+            }
+        };
+
+        Function<Pagamentos, Pagamentos> addTax = p ->
+        {
+
+            long monthsLate = VerificaValidadePagamentoUtil.calculoDeMesesDeAtraso(p);
+            if (monthsLate>0)
+            {
+                VerificaValidadePagamentoUtil.calculaAcrescimo(p);
+                //makes payment month this month
+                p.setDtVencto(p.getDtVencto().plusMonths(monthsLate));
+                addOperationCosts.accept(p);
+            }
+            //is not early
+            else
+            {
+                addOperationCosts.accept(p);
+                VerificaValidadePagamentoUtil.calculaDesconto(p);
+            }
+
+            return p;
+        };
         listaPagamentos.stream()
+            .map(addTax)
             .forEach(p -> memory.save(p));
 
 
-        System.out.println(listaPagamentos.stream()
-            .map(p -> VerificaValidadePagamentoUtil.calculaDesconto(p)).collect(Collectors.toList()));
-
-        VerificaValidadePagamentoUtil.calculaAcrescimo(null)
-            
-        /* memory.getData().stream()
-            .forEach(e -> System.out.println(e.getKey() + ": " + e.getValue()));*/
-
-        /*
-         * memory.getData().stream()
-         * .forEach(e -> System.out.println(e.getKey() + ": " + e.getValue()));
-         */
-
-        Pagamentos pg = new Pagamentos("conta de água", LocalDate.of(2022, 10, 1), 200.0, TipoPagamentoEnum.BOLETO);
-
-        System.out.println(VerificaValidadePagamentoUtil.calculoDeMesesDeAtraso(pg));
-
-        try {
+        try
+        {
             EscritaEmArquivo.EscreverProcessamento(memory);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
-
+        catch (InterruptedException e)
+        {
+            System.out.println("Escrita de arquivos interrompida");
+        }
         System.out.println("Finished main");
 
     }
