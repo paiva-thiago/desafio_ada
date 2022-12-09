@@ -62,8 +62,6 @@ public class Main {
             if (VerificaValidadePagamentoUtil.pagamentoEstaAtrasado(p))
             {
                 p.setValor(p.getValor().add(operationCosts));
-                //Sets payment day to today
-                p.setDtVencto(LocalDate.now());
             }
         };
 
