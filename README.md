@@ -25,9 +25,15 @@ Com o projeto concluído, enviem o link para o Class até o dia 7/12.
 Boa sorte!
 
 Integrantes do grupo:
+
 Filipe Lopes do Couto
+
 Higor Pires da Silva
+
 Isaac Gomes Medeiros
+
 Juliana Sinai Souza dos Santos
+
 Kawe Takamoto Siqueira
+
 Marcos Antonio Pinheiros
