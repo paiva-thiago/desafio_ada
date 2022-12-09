@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -91,6 +92,14 @@ public class Main {
             .forEach(p -> memory.save(p));
 
 
+        try
+        {
+            EscritaEmArquivo.EscreverProcessamento(memory);
+        }
+        catch (InterruptedException e)
+        {
+            System.out.println("Escrita de arquivos interrompida");
+        }
         System.out.println("Finished main");
 
     }
