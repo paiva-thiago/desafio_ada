@@ -53,6 +53,8 @@ public class Main {
 
         System.out.println(listaPagamentos.stream()
             .map(p -> VerificaValidadePagamentoUtil.calculaDesconto(p)).collect(Collectors.toList()));
+
+        VerificaValidadePagamentoUtil.calculaAcrescimo(null)
             
         /* memory.getData().stream()
             .forEach(e -> System.out.println(e.getKey() + ": " + e.getValue()));*/
